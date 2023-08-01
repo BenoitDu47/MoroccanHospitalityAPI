@@ -4,10 +4,17 @@ import fr.fms.dao.CityRepository;
 import fr.fms.dao.HotelRepository;
 import fr.fms.entities.City;
 import fr.fms.entities.Hotel;
+import fr.fms.security.entities.AppRole;
+import fr.fms.security.entities.AppUser;
+import fr.fms.security.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.ArrayList;
 
 @SpringBootApplication
 public class ApiMoroccanHospitalityApplication implements CommandLineRunner {
@@ -15,6 +22,14 @@ public class ApiMoroccanHospitalityApplication implements CommandLineRunner {
 	private HotelRepository hotelRepository;
 	@Autowired
 	private CityRepository cityRepository;
+	@Autowired
+	public AccountService accountService;
+
+	@Bean
+	public BCryptPasswordEncoder getBCryptPasswordEncoder(){
+		return new BCryptPasswordEncoder();
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(ApiMoroccanHospitalityApplication.class, args);
 	}
@@ -22,6 +37,17 @@ public class ApiMoroccanHospitalityApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		// generateDatas();
+		// generateUsersRoles();
+	}
+
+	private void generateUsersRoles() {
+		accountService.saveUser(new AppUser(null,"benoit","1234",new ArrayList<>()));
+		accountService.saveUser(new AppUser(null,"mohamed","1234",new ArrayList<>()));
+		accountService.saveRole(new AppRole(null,"ADMIN"));
+		accountService.saveRole(new AppRole(null,"USER"));
+		accountService.addRoleToUser("benoit","ADMIN");
+		accountService.addRoleToUser("benoit","USER");
+		accountService.addRoleToUser("mohamed","USER");
 	}
 
 	private void generateDatas() {
