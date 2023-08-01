@@ -20,4 +20,10 @@ public interface HotelService {
     List<City> getCities();
 
     List<Hotel> getHotelsByCityId(Long id);
+
+    City saveCity(City city);
+
+    public Optional<City> readCity(Long id);
+
+    void deleteCity(Long id);
 }

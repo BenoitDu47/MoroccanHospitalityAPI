@@ -45,6 +45,22 @@ public class HotelServiceImpl implements HotelService{
     public List<Hotel> getHotelsByCityId(Long id) {
         return hotelRepository.findByCityId(id);
     }
+
+    @Override
+    public City saveCity(City city) {
+        return cityRepository.save(city);
+    }
+
+    @Override
+    public Optional<City> readCity(Long id) {
+        return cityRepository.findById(id);
+    }
+
+    @Override
+    public void deleteCity(Long id) {
+cityRepository.deleteById(id);
+    }
+
     @Override
     public City getCity(Long id) {
         return cityRepository.getById(id);
