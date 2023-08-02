@@ -76,7 +76,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().disable();
 
         http.authorizeRequests().antMatchers(HttpMethod.DELETE,"/hotels/**").hasAuthority("ADMIN");
+        http.authorizeRequests().antMatchers(HttpMethod.PUT,"/hotel-form/**").hasAuthority("ADMIN");
+        http.authorizeRequests().antMatchers(HttpMethod.POST,"/hotel-form/**").hasAuthority("ADMIN");
         http.authorizeRequests().antMatchers(HttpMethod.GET,"/hotels/**","/cities/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.GET,"/hotel/**").permitAll();
 
         //Gérer les accès en fonction des rôles
         http.authorizeRequests().antMatchers(HttpMethod.GET, "/users/**").hasAuthority("USER");

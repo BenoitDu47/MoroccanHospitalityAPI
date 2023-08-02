@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface HotelService {
-    List<Hotel> getHotels();
 
     City getCity(Long id);
+
+    List<Hotel> getHotels();
 
     Hotel saveHotel(Hotel hotel);
 

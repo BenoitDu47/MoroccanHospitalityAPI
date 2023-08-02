@@ -3,6 +3,7 @@ package fr.fms.web;
 import fr.fms.entities.Hotel;
 import fr.fms.exception.RecordNotFoundException;
 import fr.fms.service.HotelService;
+import fr.fms.service.HotelServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,18 +27,21 @@ public class HotelController {
     @Autowired
     private HotelService hotelService;
 
+    @Autowired
+    private HotelServiceImpl hotelServiceImpl;
+
     @GetMapping("/hotels")
     public List<Hotel> allHotels() {
-        return hotelService.getHotels();
+        return hotelServiceImpl.getHotels();
     }
 
-    @GetMapping("/hotels/{id}")
+    @GetMapping("/hotel/{id}")
     public Hotel getHotelById(@PathVariable("id") Long id) {
         return hotelService.readHotel(id)
                 .orElseThrow(() -> new RecordNotFoundException("L'hôtel avec l'ID " + id + " n'existe pas"));
     }
 
-    @PostMapping("/hotels")
+    @PostMapping("/hotel-form")
     public ResponseEntity<Hotel> saveHotel(@RequestBody Hotel hotel){
         hotel.setCity(hotelService.getCity(hotel.getCity().getId()));
         Hotel savedHotel = hotelService.saveHotel(hotel);
@@ -52,24 +56,34 @@ public class HotelController {
         return ResponseEntity.created(location).build();
     }
 
-    @PutMapping("/hotels")
-    public ResponseEntity<Hotel> updateHotel(@RequestBody Hotel h){
-        Hotel existingHotel = hotelService.readHotel(h.getId()).get();
+    @PutMapping("/hotel-form/{id}")
+    public ResponseEntity<Hotel> updateHotel(@RequestBody Hotel h, @PathVariable("id") Long id) {
+        Hotel existingHotel = hotelService.readHotel(id)
+                .orElseThrow(() -> new RecordNotFoundException("L'hôtel avec l'ID " + id + " n'existe pas"));
+
         existingHotel.setName(h.getName());
         existingHotel.setDescription(h.getDescription());
+        existingHotel.setAddress(h.getAddress());
+        existingHotel.setPhone(h.getPhone());
+        existingHotel.setStars(h.getStars());
         existingHotel.setPrice(h.getPrice());
+        existingHotel.setNumberOfRoom(h.getNumberOfRoom());
         existingHotel.setCity(hotelService.getCity(h.getCity().getId()));
 
-        if(Objects.isNull(hotelService.saveHotel(existingHotel))) {
+        Hotel updatedHotel = hotelService.saveHotel(existingHotel);
+        if (Objects.isNull(updatedHotel)) {
             return ResponseEntity.noContent().build();
         }
-        URI location =  ServletUriComponentsBuilder
+
+        URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(existingHotel.getId())
+                .buildAndExpand(updatedHotel.getId())
                 .toUri();
+
         return ResponseEntity.created(location).build();
     }
+
 
     @DeleteMapping(value = "/hotels/{id}")
     public ResponseEntity<?> deleteHotel(@PathVariable("id") Long id) {
