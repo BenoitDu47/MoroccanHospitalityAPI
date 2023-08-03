@@ -1,0 +1,10 @@
+fr.fms
+fr.fms.dao
+fr.fms.entities
+fr.fms.exception
+fr.fms.security
+fr.fms.security.entities
+fr.fms.security.repo
+fr.fms.security.service
+fr.fms.service
+fr.fms.web
